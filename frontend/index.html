@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple App</title>
+</head>
+<body>
+  <h2>User Form</h2>
+
+  <input id="name" placeholder="Name"><br><br>
+  <input id="email" placeholder="Email"><br><br>
+  <button onclick="submitData()">Submit</button>
+
+  <h3>Users:</h3>
+  <ul id="list"></ul>
+
+<script>
+async function submitData() {
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+
+  await fetch("http://localhost:5000/add", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({name, email})
+  });
+
+  loadUsers();
+}
+
+async function loadUsers() {
+  const res = await fetch("http://localhost:5000/users");
+  const data = await res.json();
+
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  data.forEach(u => {
+    const li = document.createElement("li");
+    li.innerText = u.name + " - " + u.email;
+    list.appendChild(li);
+  });
+}
+</script>
+</body>
+</html>
